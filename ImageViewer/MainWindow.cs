@@ -72,5 +72,15 @@ namespace ImageViewer
         {
 
         }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel12_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
