@@ -17,33 +17,14 @@ namespace ImageViewer
             };
 
             Converter = new Converter();
+            Converter.Convert();
         }
-
-        private void MainWindow_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void grayScaleToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void openImageMenuItem_Click(object sender, EventArgs e)
         {
             if (imageFileDialog.ShowDialog() == DialogResult.OK)
             {
                 Bitmap selectedImage = new Bitmap(imageFileDialog.FileName);
                 Bitmap resizedImage = new Bitmap(sourcePictureBox.Width, sourcePictureBox.Height);
-
-                foreach (PropertyItem propertyItem in selectedImage.PropertyItems)
-                {
-                    if (propertyItem.Id == 34675) // Kod ID dla profilu kolorów w metadanych EXIF
-                    {
-                        byte[] colorProfile = propertyItem.Value;
-                        break;
-                    }
-                }
 
                 using (Graphics g = Graphics.FromImage(resizedImage))
                 {
@@ -54,33 +35,9 @@ namespace ImageViewer
                 Converter.UploadImage(resizedImage);
                 sourcePictureBox.Image = resizedImage;
 
+
                 selectedImage.Dispose();
             }
-        }
-
-        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel3_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label8_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel12_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

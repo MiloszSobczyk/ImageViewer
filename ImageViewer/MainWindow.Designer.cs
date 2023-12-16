@@ -158,7 +158,6 @@
             grayMenuItem.Name = "grayMenuItem";
             grayMenuItem.Size = new Size(53, 24);
             grayMenuItem.Text = "Gray";
-            grayMenuItem.Click += grayScaleToolStripMenuItem_Click;
             // 
             // sourcePictureBox
             // 
@@ -199,7 +198,6 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel1.Size = new Size(1158, 610);
             tableLayoutPanel1.TabIndex = 3;
-            tableLayoutPanel1.Paint += tableLayoutPanel1_Paint;
             // 
             // tableLayoutPanel2
             // 
@@ -220,7 +218,6 @@
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel2.Size = new Size(579, 244);
             tableLayoutPanel2.TabIndex = 6;
-            tableLayoutPanel2.Paint += tableLayoutPanel2_Paint;
             // 
             // comboBox2
             // 
@@ -248,7 +245,6 @@
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel3.Size = new Size(579, 148);
             tableLayoutPanel3.TabIndex = 2;
-            tableLayoutPanel3.Paint += tableLayoutPanel3_Paint;
             // 
             // tableLayoutPanel4
             // 
@@ -401,7 +397,6 @@
             label8.TabIndex = 4;
             label8.Text = "Blue:";
             label8.TextAlign = ContentAlignment.MiddleCenter;
-            label8.Click += label8_Click;
             // 
             // textBox3
             // 
@@ -802,7 +797,6 @@
             tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel12.Size = new Size(289, 148);
             tableLayoutPanel12.TabIndex = 0;
-            tableLayoutPanel12.Paint += tableLayoutPanel12_Paint;
             // 
             // label18
             // 
@@ -1002,7 +996,6 @@
             MainMenuStrip = menuStrip;
             Name = "MainWindow";
             Text = "Image Viewer";
-            Load += MainWindow_Load;
             menuStrip.ResumeLayout(false);
             menuStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)sourcePictureBox).EndInit();
