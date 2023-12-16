@@ -20,7 +20,7 @@ namespace ImageViewer
             this.sourceImage = sourceImage;
             this.convertedImage = null;
         }
-        public void Convert(int x = 215, int y = 35, int z = 67)
+        public Vector<double> Convert(int x = 215, int y = 35, int z = 67)
         {
             Matrix<double> matrix = DenseMatrix.OfArray(new double[,]
             {
@@ -32,7 +32,18 @@ namespace ImageViewer
             vector = vector.Divide(255);
             vector = vector.PointwisePower(2.2);
             vector = matrix * vector;
-            Console.WriteLine(vector);
+            ConvertBack(vector, matrix);
+            return vector;
+        }
+
+        public Vector<double> ConvertBack(Vector<double> XYZ, Matrix<double> reverse)
+        {
+            Matrix<double> matrix = reverse.Inverse();
+            Vector<double> vector = XYZ;
+            vector = matrix * vector;
+            vector = vector.PointwisePower(1 / 2.2);
+            vector *= 255;
+            return vector;
         }
         
     }
