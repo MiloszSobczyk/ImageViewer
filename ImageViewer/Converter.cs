@@ -12,20 +12,22 @@ namespace ImageViewer
     public struct ColorProfile
     {
         // perhaps it is neccessary to consider predefined illuminants of each color space
-        string name;
-        double gamma;
-        double whiteX;
-        double whiteY;
-        double redX;
-        double redY;
-        double greenX;
-        double greenY;
-        double blueX;
-        double blueY;
+        public string name;
+        public double gamma;
+        public double whiteX;
+        public double whiteY;
+        public double redX;
+        public double redY;
+        public double greenX;
+        public double greenY;
+        public double blueX;
+        public double blueY;
         public static Dictionary<string, ColorProfile> GenerateProfiles()
         {
             Dictionary<string, ColorProfile> profiles = new Dictionary<string, ColorProfile>()
             {
+                { "Custom", new ColorProfile() { name = "Custom", gamma = 2.2, whiteX = 0.3127, whiteY = 0.3290,
+                    redX = 0.64, redY = 0.33, greenX = 0.3, greenY = 0.6, blueX = 0.15, blueY = 0.06 } },
                 { "sRGB", new ColorProfile() { name = "sRGB", gamma = 2.2, whiteX = 0.3127, whiteY = 0.3290,
                     redX = 0.64, redY = 0.33, greenX = 0.3, greenY = 0.6, blueX = 0.15, blueY = 0.06 } },
                 { "AdobeRGB", new ColorProfile() { name = "AdobeRGB", gamma = 2.2, whiteX = 0.3127, whiteY = 0.3290,
@@ -36,8 +38,6 @@ namespace ImageViewer
                     redX = 0.735, redY = 0.265, greenX = 0.274, greenY = 0.717, blueX = 0.167, blueY = 0.007 } },
                 { "WideGamut", new ColorProfile() { name = "WideGamut", gamma = 1.2, whiteX = 0.3456, whiteY = 0.3585,
                     redX = 0.7347, redY = 0.2653, greenX = 0.1152, greenY = 0.8264, blueX = 0.1566, blueY = 0.0177 } },
-                { "Custom", new ColorProfile() { name = "custom", gamma = 2.2, whiteX = 0.3127, whiteY = 0.3290,
-                    redX = 0.64, redY = 0.33, greenX = 0.3, greenY = 0.6, blueX = 0.15, blueY = 0.06 } },
             };
             return profiles;
         }
@@ -77,6 +77,11 @@ namespace ImageViewer
             vector = vector.PointwisePower(1 / 2.2);
             vector *= 255;
             return vector;
+        }
+
+        public void Convert(ColorProfile sourceProfile, ColorProfile resultProfile)
+        {
+
         }
         
     }

@@ -153,6 +153,7 @@
             convertMenuItem.Name = "convertMenuItem";
             convertMenuItem.Size = new Size(74, 24);
             convertMenuItem.Text = "Convert";
+            convertMenuItem.Click += convertMenuItem_Click;
             // 
             // saveMenuItem
             // 
@@ -310,6 +311,7 @@
             sourceGamma.Name = "sourceGamma";
             sourceGamma.Size = new Size(125, 27);
             sourceGamma.TabIndex = 2;
+            sourceGamma.Tag = "gamma";
             // 
             // tableLayoutPanel14
             // 
@@ -567,6 +569,7 @@
             resultProfileComboBox.Name = "resultProfileComboBox";
             resultProfileComboBox.Size = new Size(286, 28);
             resultProfileComboBox.TabIndex = 2;
+            resultProfileComboBox.SelectedIndexChanged += resultProfileComboBox_SelectedIndexChanged;
             // 
             // tableLayoutPanel11
             // 
