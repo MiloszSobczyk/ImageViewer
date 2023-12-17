@@ -1,12 +1,14 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ImageViewer
 {
     public partial class MainWindow : Form
     {
-        public Converter Converter { get; set; }
+        public Converter converter;
+        public Dictionary<string, ColorProfile> profiles;
         public MainWindow()
         {
             InitializeComponent();
@@ -16,8 +18,18 @@ namespace ImageViewer
                 Filter = "|*.jpg;*.jpeg;*.png;*.bmp"
             };
 
-            Converter = new Converter();
-            Converter.Convert();
+            converter = new Converter();
+            profiles = ColorProfile.GenerateProfiles();
+
+            List<string> elements = profiles.Keys.ToList();
+            elements.Insert(0, "");
+            sourceProfileComboBox.DataSource = elements;
+
+            elements = profiles.Keys.ToList();
+            elements.Insert(0, "");
+            resultProfileComboBox.DataSource = elements;
+
+            converter.Convert();
         }
         private void openImageMenuItem_Click(object sender, EventArgs e)
         {
@@ -32,12 +44,17 @@ namespace ImageViewer
                     g.DrawImage(selectedImage, 0, 0, sourcePictureBox.Width, sourcePictureBox.Height);
                 }
 
-                Converter.UploadImage(resizedImage);
+                converter.UploadImage(resizedImage);
                 sourcePictureBox.Image = resizedImage;
 
 
                 selectedImage.Dispose();
             }
+        }
+
+        private void sourceProfileComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

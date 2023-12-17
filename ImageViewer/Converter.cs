@@ -9,6 +9,39 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace ImageViewer
 {
+    public struct ColorProfile
+    {
+        // perhaps it is neccessary to consider predefined illuminants of each color space
+        string name;
+        double gamma;
+        double whiteX;
+        double whiteY;
+        double redX;
+        double redY;
+        double greenX;
+        double greenY;
+        double blueX;
+        double blueY;
+        public static Dictionary<string, ColorProfile> GenerateProfiles()
+        {
+            Dictionary<string, ColorProfile> profiles = new Dictionary<string, ColorProfile>()
+            {
+                { "sRGB", new ColorProfile() { name = "sRGB", gamma = 2.2, whiteX = 0.3127, whiteY = 0.3290,
+                    redX = 0.64, redY = 0.33, greenX = 0.3, greenY = 0.6, blueX = 0.15, blueY = 0.06 } },
+                { "AdobeRGB", new ColorProfile() { name = "AdobeRGB", gamma = 2.2, whiteX = 0.3127, whiteY = 0.3290,
+                    redX = 0.64, redY = 0.33, greenX = 0.21, greenY = 0.71, blueX = 0.15, blueY = 0.06 } },
+                { "AppleRGB", new ColorProfile() { name = "AppleRGB", gamma = 2.2, whiteX = 0.3127, whiteY = 0.3290,
+                    redX = 0.625, redY = 0.34, greenX = 0.28, greenY = 0.595, blueX = 0.155, blueY = 0.07 } },
+                { "CIERGB", new ColorProfile() { name = "CIERGB", gamma = 2.2, whiteX = 0.3333, whiteY = 0.3333,
+                    redX = 0.735, redY = 0.265, greenX = 0.274, greenY = 0.717, blueX = 0.167, blueY = 0.007 } },
+                { "WideGamut", new ColorProfile() { name = "WideGamut", gamma = 1.2, whiteX = 0.3456, whiteY = 0.3585,
+                    redX = 0.7347, redY = 0.2653, greenX = 0.1152, greenY = 0.8264, blueX = 0.1566, blueY = 0.0177 } },
+                { "Custom", new ColorProfile() { name = "custom", gamma = 2.2, whiteX = 0.3127, whiteY = 0.3290,
+                    redX = 0.64, redY = 0.33, greenX = 0.3, greenY = 0.6, blueX = 0.15, blueY = 0.06 } },
+            };
+            return profiles;
+        }
+    }
     public class Converter
     {
         public Bitmap? sourceImage;
