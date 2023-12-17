@@ -161,6 +161,7 @@
             saveMenuItem.Name = "saveMenuItem";
             saveMenuItem.Size = new Size(54, 24);
             saveMenuItem.Text = "Save";
+            saveMenuItem.Click += saveMenuItem_Click;
             // 
             // grayMenuItem
             // 
@@ -169,6 +170,7 @@
             grayMenuItem.Name = "grayMenuItem";
             grayMenuItem.Size = new Size(53, 24);
             grayMenuItem.Text = "Gray";
+            grayMenuItem.Click += grayMenuItem_Click;
             // 
             // sourcePictureBox
             // 

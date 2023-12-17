@@ -9,6 +9,7 @@ namespace ImageViewer
     public partial class MainWindow : Form
     {
         bool itemChanged = false;
+        bool grayScale = false;
         public Converter converter;
         public Dictionary<string, ColorProfile> profiles;
         public MainWindow()
@@ -17,7 +18,7 @@ namespace ImageViewer
             imageFileDialog = new OpenFileDialog()
             {
                 Title = "Choose an image",
-                Filter = "|*.jpg;*.jpeg;*.png;*.bmp"
+                Filter = "|*.jpg;*.jpeg;*.png"
             };
 
             converter = new Converter();
@@ -48,7 +49,7 @@ namespace ImageViewer
 
                 converter.UploadImage(resizedImage);
                 sourcePictureBox.Image = resizedImage;
-
+                grayScale = false;
 
                 selectedImage.Dispose();
             }
@@ -147,9 +148,10 @@ namespace ImageViewer
 
         private void convertMenuItem_Click(object sender, EventArgs e)
         {
-            if (sourceProfileComboBox.SelectedIndex == 0 || resultProfileComboBox.SelectedIndex == 0 
+            if (sourceProfileComboBox.SelectedIndex == 0 || resultProfileComboBox.SelectedIndex == 0
                 || converter.sourceImage == null)
             {
+                MessageBox.Show("Upload an image and choose valid source and result color profiles.");
                 return;
             }
             ColorProfile sourceProfile = profiles[sourceProfileComboBox.Text];
@@ -157,6 +159,46 @@ namespace ImageViewer
 
             converter.Convert(sourceProfile, resultProfile);
             convertedPictureBox.Image = converter.convertedImage;
+        }
+
+        private void saveMenuItem_Click(object sender, EventArgs e)
+        {
+            if (converter.convertedImage == null) return;
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            {
+                Title = "Save image",
+                Filter = "|*.jpg;*.jpeg;*.png",
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                converter.convertedImage.Save(saveFileDialog.FileName, GetImageFormatFromExtension(saveFileDialog.FileName));
+        }
+        private ImageFormat GetImageFormatFromExtension(string fileName)
+        {
+            string extension = Path.GetExtension(fileName)?.ToLower();
+
+            switch (extension)
+            {
+                case ".png":
+                    return ImageFormat.Png;
+                case ".jpeg":
+                case ".jpg":
+                    return ImageFormat.Jpeg;
+                default:
+                    return ImageFormat.Png;
+            }
+        }
+
+        private void grayMenuItem_Click(object sender, EventArgs e)
+        {
+            grayScale = !grayScale;
+            if(grayScale)
+            {
+                converter.ConvertToGray();
+                sourcePictureBox.Image = converter.grayedSourceImage;
+            }
+
         }
     }
 }
