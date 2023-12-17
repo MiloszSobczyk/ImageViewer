@@ -81,8 +81,71 @@ namespace ImageViewer
 
         public void Convert(ColorProfile sourceProfile, ColorProfile resultProfile)
         {
+            if(sourceProfile.Equals(resultProfile))
+            {
+                convertedImage = sourceImage;
+                return;
+            }    
+
+            Matrix<double> sourceToXYZ = CalculateConversionMatrix(sourceProfile);
+            Matrix<double> resultToXYZ = CalculateConversionMatrix(resultProfile);
+            Matrix<double> XYZToResult = resultToXYZ.Inverse();
+
+            convertedImage = new Bitmap(sourceImage.Width, sourceImage.Height);
+            for(int i = 0; i < sourceImage.Width; ++i)
+            {
+                for(int j = 0; j < sourceImage.Height; ++j)
+                {
+                    Color pixel = sourceImage.GetPixel(i, j);
+                    Vector<double> pixelVector = Vector<double>.Build.DenseOfArray(new double[]
+                        { pixel.R, pixel.G, pixel.B });
+                    pixelVector = pixelVector.Divide(255);
+                    pixelVector = pixelVector.PointwisePower(sourceProfile.gamma);
+                    pixelVector = sourceToXYZ * pixelVector;
+
+                    pixelVector = XYZToResult * pixelVector;
+                    pixelVector = pixelVector.PointwisePower(1 / resultProfile.gamma);
+                    pixelVector = pixelVector.Multiply(255);
+                    bool convertible = pixelVector.All(x => x >= 0 && x <= 255);
+                    Color convertedColor = convertible ?
+                        Color.FromArgb((int)pixelVector[0], (int)pixelVector[1], (int)pixelVector[2]) : Color.Black;
+                    convertedImage.SetPixel(i, j, convertedColor);
+                }
+            }
 
         }
-        
+        public Matrix<double> CalculateConversionMatrix(ColorProfile profile)
+        {
+            Vector<double> XYZ = CalculateXYZ(profile);
+            Matrix<double> profileMatrix = CalculateProfileMatrix(profile);
+            Matrix<double> inverseProfileMatrix = profileMatrix.Inverse();
+
+            Vector<double> S = inverseProfileMatrix * XYZ;
+
+            Matrix<double> conversionMatrix = DenseMatrix.OfArray(new double[,]
+            {
+                { profileMatrix[0, 0] * S[0], profileMatrix[0, 1] * S[1], profileMatrix[0, 2] * S[2] },
+                { profileMatrix[1, 0] * S[0], profileMatrix[1, 1] * S[1], profileMatrix[1, 2] * S[2] },
+                { profileMatrix[2, 0] * S[0], profileMatrix[2, 1] * S[1], profileMatrix[2, 2] * S[2] },
+            });
+            return conversionMatrix;
+        }
+        public Matrix<double> CalculateProfileMatrix(ColorProfile profile)
+        {
+            return DenseMatrix.OfArray(new double[,]
+            {
+                { profile.redX, profile.greenX, profile.blueX },
+                { profile.redY, profile.greenY, profile.blueY },
+                { 1 - profile.redX - profile.redY, 1 - profile.greenX - profile.greenY, 1 - profile.blueX - profile.blueY },
+            });
+        }
+        public Vector<double> CalculateXYZ(ColorProfile profile)
+        {
+            double Y = 1;
+            double X = profile.whiteX * (Y / profile.whiteY);
+            double Z = (1 - profile.whiteX - profile.whiteY) * (Y / profile.whiteY);
+            return Vector<double>.Build.DenseOfArray(new double[] { X, Y, Z });
+
+        }
     }
 }

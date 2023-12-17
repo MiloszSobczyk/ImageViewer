@@ -147,7 +147,16 @@ namespace ImageViewer
 
         private void convertMenuItem_Click(object sender, EventArgs e)
         {
-            Converter
+            if (sourceProfileComboBox.SelectedIndex == 0 || resultProfileComboBox.SelectedIndex == 0 
+                || converter.sourceImage == null)
+            {
+                return;
+            }
+            ColorProfile sourceProfile = profiles[sourceProfileComboBox.Text];
+            ColorProfile resultProfile = profiles[resultProfileComboBox.Text];
+
+            converter.Convert(sourceProfile, resultProfile);
+            convertedPictureBox.Image = converter.convertedImage;
         }
     }
 }
