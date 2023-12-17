@@ -105,7 +105,7 @@ namespace ImageViewer
             return vector;
         }
 
-        public void Convert(ColorProfile sourceProfile, ColorProfile resultProfile)
+        public void Convert(ColorProfile sourceProfile, ColorProfile resultProfile, bool grayScale = false)
         {
             if(sourceProfile.Equals(resultProfile))
             {
@@ -121,12 +121,14 @@ namespace ImageViewer
             Matrix<double> resultToXYZ = CalculateConversionMatrix(resultProfile);
             Matrix<double> XYZToResult = resultToXYZ.Inverse();
 
+            Bitmap convertedBitmap = new Bitmap(sourceImage!.Width, sourceImage!.Height);
+            Bitmap sourceBitmap = grayScale ? grayedSourceImage! : sourceImage!;
             convertedImage = new Bitmap(sourceImage.Width, sourceImage.Height);
-            for(int i = 0; i < sourceImage.Width; ++i)
+            for(int i = 0; i < sourceBitmap.Width; ++i)
             {
-                for(int j = 0; j < sourceImage.Height; ++j)
+                for(int j = 0; j < sourceBitmap.Height; ++j)
                 {
-                    Color pixel = sourceImage.GetPixel(i, j);
+                    Color pixel = sourceBitmap.GetPixel(i, j);
                     Vector<double> pixelVector = Vector<double>.Build.DenseOfArray(new double[]
                         { pixel.R, pixel.G, pixel.B });
                     pixelVector = pixelVector.Divide(255);
@@ -137,6 +139,7 @@ namespace ImageViewer
                     pixelVector = XYZToResult * pixelVector;
                     pixelVector = pixelVector.PointwisePower(1 / resultProfile.gamma);
                     pixelVector = pixelVector.Multiply(255);
+
                     bool convertible = pixelVector.All(x => x >= -eps && x <= 255 + eps);
                     Color convertedColor = Color.Black;
                     if(pixelVector.All(x => x >= -eps && x <= 255 + eps))
@@ -147,9 +150,13 @@ namespace ImageViewer
                         int B = (int)pixelVector[2];
                         convertedColor = Color.FromArgb(R, G, B);
                     }
-                    convertedImage.SetPixel(i, j, convertedColor);
+                    convertedBitmap.SetPixel(i, j, convertedColor);
                 }
             }
+            if (grayScale)
+                grayedConvertedImage = convertedBitmap;
+            else
+                convertedImage = convertedBitmap;
 
         }
         public Matrix<double> CalculateConversionMatrix(ColorProfile profile)
@@ -211,7 +218,7 @@ namespace ImageViewer
         }
         public void ConvertToGray()
         {
-            if (sourceImage == null) return;
+            if (sourceImage == null || grayedSourceImage != null) return;
             grayedSourceImage = new Bitmap(sourceImage.Width, sourceImage.Height);
             for(int i = 0; i < grayedSourceImage.Width; ++i)
             {

@@ -1,3 +1,4 @@
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -157,13 +158,13 @@ namespace ImageViewer
             ColorProfile sourceProfile = profiles[sourceProfileComboBox.Text];
             ColorProfile resultProfile = profiles[resultProfileComboBox.Text];
 
-            converter.Convert(sourceProfile, resultProfile);
-            convertedPictureBox.Image = converter.convertedImage;
+            converter.Convert(sourceProfile, resultProfile, grayScale);
+            convertedPictureBox.Image = grayScale ? converter.grayedConvertedImage : converter.convertedImage;
         }
 
         private void saveMenuItem_Click(object sender, EventArgs e)
         {
-            if (converter.convertedImage == null) return;
+            if ((!grayScale && converter.convertedImage == null) || (grayScale && converter.grayedConvertedImage == null)) return;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog()
             {
@@ -172,7 +173,12 @@ namespace ImageViewer
             };
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                converter.convertedImage.Save(saveFileDialog.FileName, GetImageFormatFromExtension(saveFileDialog.FileName));
+            {
+                if(grayScale)
+                    converter.grayedConvertedImage.Save(saveFileDialog.FileName, GetImageFormatFromExtension(saveFileDialog.FileName));
+                else
+                    converter.convertedImage.Save(saveFileDialog.FileName, GetImageFormatFromExtension(saveFileDialog.FileName));
+            }
         }
         private ImageFormat GetImageFormatFromExtension(string fileName)
         {
@@ -197,6 +203,34 @@ namespace ImageViewer
             {
                 converter.ConvertToGray();
                 sourcePictureBox.Image = converter.grayedSourceImage;
+                if(converter.convertedImage != null)
+                {
+                    if (sourceProfileComboBox.SelectedIndex == 0 || resultProfileComboBox.SelectedIndex == 0
+                        || converter.sourceImage == null) { }
+                    else
+                    {
+                        ColorProfile sourceProfile = profiles[sourceProfileComboBox.Text];
+                        ColorProfile resultProfile = profiles[resultProfileComboBox.Text];
+                        converter.Convert(sourceProfile, resultProfile, true);
+                    }
+                }
+                convertedPictureBox.Image = converter.grayedConvertedImage;
+            }
+            else
+            {
+                sourcePictureBox.Image = converter.sourceImage;
+                if (converter.convertedImage != null)
+                {
+                    if (sourceProfileComboBox.SelectedIndex == 0 || resultProfileComboBox.SelectedIndex == 0
+                        || converter.sourceImage == null) { }
+                    else
+                    {
+                        ColorProfile sourceProfile = profiles[sourceProfileComboBox.Text];
+                        ColorProfile resultProfile = profiles[resultProfileComboBox.Text];
+                        converter.Convert(sourceProfile, resultProfile, false);
+                    }
+                }
+                convertedPictureBox.Image = converter.convertedImage;
             }
 
         }
